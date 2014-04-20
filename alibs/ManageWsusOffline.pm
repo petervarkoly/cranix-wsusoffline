@@ -3,7 +3,7 @@
 
 BEGIN{ push @INC,"/usr/share/oss/lib/"; }
 
-package ManangeWsusOffline;
+package ManageWsusOffline;
 
 use strict;
 use Config::Crontab;
@@ -145,6 +145,7 @@ print "$par\n";
         $ct->write;
         $this->default;
 }
+
 sub addUpdate
 {
         my $this  = shift;
@@ -157,6 +158,10 @@ sub addUpdate
 	}
 	@pcs = sort(@pcs);
 	push @ret, { description => $reply->{description} || 'Update' };
+	if( defined $reply->{warning} )
+	{
+	    push @ret, { NOTICE => $reply->{warning} };
+	}
 	push @ret, { pcs      => \@pcs };
 	push @ret, { rooms    => \@rooms };
 	push @ret, { hwconfig => $this->get_HW_configurations(0) };
@@ -207,8 +212,8 @@ sub createUpdate
 	}
 	else
 	{
-	    $reply->{ label => "Select workstations, hwconfiguration or romms ." };
-	    $this->addUpdate($reply );
+	    $reply->{warning} = "Select workstations, hwconfiguration or romms .";
+	    $this->addUpdate($reply);
 	}
 	close CONFIG;
         my $ct    = new Config::Crontab( -file => $ctFile );
