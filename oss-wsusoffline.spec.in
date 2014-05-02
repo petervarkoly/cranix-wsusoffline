@@ -27,20 +27,14 @@ Source:		%{name}.tar.gz
 Source1: 	wsusoffline90.zip
 #Source99:       #{name}-rpmlintrc
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
+Requires:	cabextract
 Requires:	lmd
+Requires:       md5deep
 Requires:       perl-Config-Crontab
-Requires:	cabextract md5deep xmlstarlet 
+Requires:       wget 
+Requires:       xmlstarlet 
 BuildRequires:  unzip
 
-# for goupadd
-%if 0%{?suse_version}
-Requires(pre):  pwdutils
-%else
-#Requires(pre):  shadow-utils
-Requires(pre):  /usr/bin/groupadd
-%endif
-
-Requires:       cabextract md5deep xmlstarlet wget
 BuildArch:      noarch
 
 %description
@@ -59,9 +53,9 @@ Also unattended/silient installation are possible, so the update be be included 
 
 %install
 make install
-%define DEST_DIR /srv/wsusoffline/
+%define DEST_DIR /srv/itool/wsusoffline/
 mkdir -p $RPM_BUILD_ROOT/%{DEST_DIR}/
-unzip %{S:1} -d $RPM_BUILD_ROOT/srv/
+unzip %{S:1} -d $RPM_BUILD_ROOT/srv/itool/
 install -d $RPM_BUILD_ROOT/%{DEST_DIR}/temp/
 
 
@@ -87,8 +81,6 @@ chmod g+ws $RPM_BUILD_ROOT/%{DEST_DIR}/temp/
 rm -rf %{buildroot}
 
 %pre
-getent group wsusoffline >/dev/null || groupadd -r wsusoffline
-
 
 %files
 %defattr(-,root,root)
@@ -99,7 +91,7 @@ getent group wsusoffline >/dev/null || groupadd -r wsusoffline
 %{DEST_DIR}/doc/
 %{DEST_DIR}/xslt/
  
-%defattr(-,root,wsusoffline)
+%defattr(-,root,WORKSTATIONS)
 %{DEST_DIR}/client/
 %{DEST_DIR}/exclude/
 %{DEST_DIR}/iso/

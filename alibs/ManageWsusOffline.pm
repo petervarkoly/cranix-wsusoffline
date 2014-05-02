@@ -212,6 +212,7 @@ sub createUpdate
 	}
 	else
 	{
+	    unlink($tmpf);
 	    $reply->{warning} = "Select workstations, hwconfiguration or romms .";
 	    $this->addUpdate($reply);
 	}
@@ -220,7 +221,8 @@ sub createUpdate
         $ct->system(1);
         $ct->read;
         my ($hour, $minute) = split(":", $reply->{time});
-	my $command = "/usr/share/oss/tools/wsus_update.sh $tmpf";
+	$tmpf =~ s#/var/adm/oss/wsus##;
+	my $command = "/usr/share/oss/tools/wsus_update.pl $tmpf";
         my $event = new Config::Crontab::Event( -minute  => sprintf("%i",$minute),
                                                 -hour    => sprintf("%i",$hour),
                                                 -dow     => $sdow,
@@ -286,7 +288,7 @@ sub createDownload
 	my $OS = $reply->{OS}; 
 	$OS = "w2k3-x64" if( $OS eq "wxp-x64" );
 	#Create command:
-	my $command = "/srv/wsusoffline/sh/DownloadUpdates.sh $OS ".$reply->{language};
+	my $command = "/srv/itool/wsusoffline/sh/DownloadUpdates.sh $OS ".$reply->{language};
 	$command .= " /excludesp" if( $reply->{excludesp} );
 	$command .= " /dotnet" if( $reply->{dotnet} );
 	$command .= " /msse" if( $reply->{msse} );
