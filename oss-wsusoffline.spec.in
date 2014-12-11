@@ -28,11 +28,12 @@ Source1: 	wsusoffline90.zip
 #Source99:       #{name}-rpmlintrc
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Requires:	cabextract
+Requires:	libmspack
 Requires:	lmd
 Requires:       md5deep
 Requires:       perl-Config-Crontab
 Requires:       wget 
-Requires:       xmlstarlet 
+Requires:       xmlstarlet
 BuildRequires:  unzip
 
 BuildArch:      noarch
@@ -46,10 +47,7 @@ Also unattended/silient installation are possible, so the update be be included 
 %prep
 %setup -c
 
-
 %build
-
-
 
 %install
 make install
@@ -82,12 +80,16 @@ rm -rf %{buildroot}
 
 %pre
 
+%post
+if [ -e /etc/sysconfig/schoolserver ]; then
+   /usr/share/oss/tools/%{name}/wsusUpdate.ldif.sh
+fi
+exit 0
+
 %files
 %defattr(-,root,root)
 /usr/bin/wsus-*.sh
 %dir %{DEST_DIR}
-# #{DEST_DIR}/bin
-# #{DEST_DIR}/cmd
 %{DEST_DIR}/doc/
 %{DEST_DIR}/xslt/
  
@@ -100,5 +102,8 @@ rm -rf %{buildroot}
 %{DEST_DIR}/sh/
 %{DEST_DIR}/static
 %{DEST_DIR}/temp/
+/usr/share/oss/tools/%{name}/
+/usr/share/lmd/alibs/ManageWsusOffline.pm
+/srv/itool/swrepository/wpkg/packages/wsusUpdate.xml
 
 %changelog

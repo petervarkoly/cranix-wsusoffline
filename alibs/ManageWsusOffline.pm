@@ -222,7 +222,7 @@ sub createUpdate
         $ct->read;
         my ($hour, $minute) = split(":", $reply->{time});
 	$tmpf =~ s#/var/adm/oss/wsus##;
-	my $command = "/usr/share/oss/tools/wsus_update.pl $tmpf";
+	my $command = "/usr/share/oss/tools/oss-wsusoffline/wsus_update.pl $tmpf";
         my $event = new Config::Crontab::Event( -minute  => sprintf("%i",$minute),
                                                 -hour    => sprintf("%i",$hour),
                                                 -dow     => $sdow,
