@@ -23,7 +23,7 @@ Release:        RELEASE
 Summary:        WSUS Offline Update: download Microsoft updates
 License:        GPLv2+
 URL:            http://www.wsusoffline.net/
-Source:		%{name}.tar.gz
+Source:		%{name}.tar.bz2
 Source1: 	wsusoffline90.zip
 #Source99:       #{name}-rpmlintrc
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
