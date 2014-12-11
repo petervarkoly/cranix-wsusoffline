@@ -50,7 +50,7 @@ Also unattended/silient installation are possible, so the update be be included 
 %build
 
 %install
-make install
+make DESTDIR=$RPM_BUILD_ROOT install
 %define DEST_DIR /srv/itool/wsusoffline/
 mkdir -p $RPM_BUILD_ROOT/%{DEST_DIR}/
 unzip %{S:1} -d $RPM_BUILD_ROOT/srv/itool/
