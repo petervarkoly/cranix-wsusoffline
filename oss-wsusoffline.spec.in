@@ -45,7 +45,7 @@ After downloading, they can be installed on any Microsoft Windows system without
 Also unattended/silient installation are possible, so the update be be included easily in a Windows software management system like http://www.opsi.org
 
 %prep
-%setup -c
+%setup -n %{name}
 
 %build
 
