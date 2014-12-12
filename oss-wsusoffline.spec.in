@@ -104,5 +104,13 @@ exit 0
 /usr/share/oss/tools/%{name}/
 /usr/share/lmd/alibs/ManageWsusOffline.pm
 /srv/itool/swrepository/wpkg/packages/wsusUpdate.xml
+%dir /srv/itool
+%dir /srv/itool/swrepository
+%dir /srv/itool/swrepository/wpkg
+%dir /srv/itool/swrepository/wpkg/packages
+%dir /usr/share/lmd
+%dir /usr/share/lmd/alibs
+%dir /usr/share/oss
+%dir /usr/share/oss/tools
 
 %changelog
