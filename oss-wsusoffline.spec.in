@@ -88,7 +88,6 @@ exit 0
 
 %files
 %defattr(-,root,root)
-/usr/bin/wsus-*.sh
 %dir %{DEST_DIR}
 %{DEST_DIR}/doc/
 %{DEST_DIR}/xslt/
