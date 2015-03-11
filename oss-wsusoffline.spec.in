@@ -29,11 +29,11 @@ Source1: 	wsusoffline90.zip
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Requires:	cabextract
 Requires:	libmspack
-Requires:	lmd
 Requires:       md5deep
 Requires:       perl-Config-Crontab
 Requires:       wget 
 Requires:       xmlstarlet
+PreReq:		lmd
 BuildRequires:  unzip
 
 BuildArch:      noarch
@@ -109,9 +109,5 @@ exit 0
 %dir /srv/itool/swrepository
 %dir /srv/itool/swrepository/wpkg
 %dir /srv/itool/swrepository/wpkg/packages
-%dir /usr/share/lmd
-%dir /usr/share/lmd/alibs
-%dir /usr/share/oss
-%dir /usr/share/oss/tools
 
 %changelog
