@@ -14,6 +14,7 @@ install:
 	mkdir -p $(DESTDIR)/usr/share/oss/tools/oss-wsusoffline/
 	install -m 644 wsusUpdate.xml $(DESTDIR)/srv/itool/swrepository/wpkg/packages/
 	install -m 644 alibs/ManageWsusOffline.pm $(DESTDIR)/usr/share/lmd/alibs
+	install -m 644 lang/*ini $(DESTDIR)/usr/share/lmd/lang
 	install -m 755 tools/* $(DESTDIR)/usr/share/oss/tools/oss-wsusoffline/
 
 dist:  
