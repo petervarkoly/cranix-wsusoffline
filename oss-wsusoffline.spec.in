@@ -42,7 +42,7 @@ BuildArch:      noarch
 "WSUS Offline Update" allows you to download most Microsoft updates and store them localy.
 This includes Windows, Office and some extensions like dotnet or Powershell.
 After downloading, they can be installed on any Microsoft Windows system without an  Internet connection.
-Also unattended/silient installation are possible, so the update be be included easily in a Windows software management system like http://www.opsi.org
+Also unattended/silient installation are possible, with OSSClientInstall.
 
 %prep
 %setup -n %{name}
