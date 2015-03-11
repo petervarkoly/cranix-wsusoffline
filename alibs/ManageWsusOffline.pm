@@ -45,15 +45,17 @@ sub getCapabilities
                 { allowedRole  => 'sysadmins' },
                 { category     => 'Network' },
                 { order        => 70 },
-                { variable     => [ "time",    [ type => "time" ] ] },
-                { variable     => [ "delete",  [ type => "boolean" ] ] },
-                { variable     => [ "mo",  [ type => "boolean" ] ] },
-                { variable     => [ "tu",  [ type => "boolean" ] ] },
-                { variable     => [ "we",  [ type => "boolean" ] ] },
-                { variable     => [ "th",  [ type => "boolean" ] ] },
-                { variable     => [ "fr",  [ type => "boolean" ] ] },
-                { variable     => [ "sa",  [ type => "boolean" ] ] },
-                { variable     => [ "su",  [ type => "boolean" ] ] },
+                { variable     => [ "time",       [ type => "time" ] ] },
+                { variable     => [ "delete",     [ type => "boolean" ] ] },
+                { variable     => [ "weekly",     [ type => "popup" ] ] },
+                { variable     => [ "nix",        [ type => "label" ] ] },
+                { variable     => [ "mo",         [ type => "boolean" ] ] },
+                { variable     => [ "tu",         [ type => "boolean" ] ] },
+                { variable     => [ "we",         [ type => "boolean" ] ] },
+                { variable     => [ "th",         [ type => "boolean" ] ] },
+                { variable     => [ "fr",         [ type => "boolean" ] ] },
+                { variable     => [ "sa",         [ type => "boolean" ] ] },
+                { variable     => [ "su",         [ type => "boolean" ] ] },
                 { variable     => [ "excludesp",  [ type => "boolean", label => "Do not download servicepacks" ] ] },
                 { variable     => [ "dotnet",     [ type => "boolean", label => "Download .NET framework" ] ] },
                 { variable     => [ "msse",       [ type => "boolean", label => "Download Microsoft Security Essentials files" ] ] },
@@ -62,9 +64,9 @@ sub getCapabilities
 		{ variable     => [ "hwconfig",   [ type => "list", size=>"6",  multiple=>"true" ]] },
 		{ variable     => [ "pcs",        [ type => "list", size=>"6",  multiple=>"true" ]] },
 		{ variable     => [ "rooms",      [ type => "list", size=>"6",  multiple=>"true" ]] },
-                { variable     => [ "OS", [ type => "popup" ] ] },
-                { variable     => [ "language", [ type => "popup" ] ] },
-                { variable     => [ "command",  [ type => "hidden" ] ] }
+                { variable     => [ "OS",         [ type => "popup" ] ] },
+                { variable     => [ "language",   [ type => "popup" ] ] },
+                { variable     => [ "command",    [ type => "hidden" ] ] }
         ];
 }
 
@@ -72,7 +74,7 @@ sub default
 {
         my $this  = shift;
         my @ret   = ();
-        my @table = ('times', { head => [ "description", "time", "mo","tu","we","th","fr","sa","su","delete" ] } );
+        my @table = ('times', { head => [ "description", "time", "mo","tu","we","th","fr","sa","su","week","delete" ] } );
 
         my $ct    = new Config::Crontab( -file => $ctFile );
         $ct->system(1);
@@ -85,17 +87,36 @@ sub default
 		my $time = sprintf("%02i:%02i",$block->hour,$block->minute);
 		my $dow  = $block->dow;
 		my $desc = $com->data; $desc =~ s/^##//;
-		push @table, { line => [ $i ,   { description => $desc },
-						{ time => $time },
-						{ mo => $dow=~ /1/ },
-						{ tu => $dow=~ /2/ }, 
-						{ we => $dow=~ /3/ }, 
-						{ th => $dow=~ /4/ }, 
-						{ fr => $dow=~ /5/ }, 
-						{ sa => $dow=~ /6/ }, 
-						{ su => $dow=~ /7/ }, 
-						{ delete => 0 } ,
-						{ command => $block->command } ]};
+		my( $cmd, $week, $par ) = split / /, $block->command;
+		if( "/usr/share/oss/tools/oss-wsusoffline/wsus_update.pl" eq $cmd ) {
+			push @table, { line => [ $i ,   { description => $desc },
+							{ time => $time },
+							{ mo => $dow=~ /1/ },
+							{ tu => $dow=~ /2/ }, 
+							{ we => $dow=~ /3/ }, 
+							{ th => $dow=~ /4/ }, 
+							{ fr => $dow=~ /5/ }, 
+							{ sa => $dow=~ /6/ }, 
+							{ su => $dow=~ /7/ },
+							{ weekly => [ 1,2,3,4,5,6,7,8,9,10,11,12,'---DEFAULTS---',$week ]},
+							{ delete => 0 } ,
+							{ command => $block->command } ]};
+		}
+		else
+		{
+			push @table, { line => [ $i ,   { description => $desc },
+							{ time => $time },
+							{ mo => $dow=~ /1/ },
+							{ tu => $dow=~ /2/ }, 
+							{ we => $dow=~ /3/ }, 
+							{ th => $dow=~ /4/ }, 
+							{ fr => $dow=~ /5/ }, 
+							{ sa => $dow=~ /6/ }, 
+							{ su => $dow=~ /7/ },
+							{ nix=> ""},
+							{ delete => 0 } ,
+							{ command => $block->command } ]};
+		}
 		$i++;
 	}
 	push @ret, { table    => \@table };
@@ -116,10 +137,9 @@ sub apply
         $ct->read;
         for my $i ( sort keys %{$reply->{times}} )
         {
+	    my( $cmd, $week, $par ) = split / /, $reply->{times}->{$i}->{command};
             if( $reply->{times}->{$i}->{delete} ) {
-		my( $cmd, $par ) = split / /, $reply->{times}->{$i}->{command};
-print "$par\n";
-	        unlink $par if( -r $par );
+	        unlink $par if( "/usr/share/oss/tools/oss-wsusoffline/wsus_update.pl" eq $cmd and -r $par );
 		next;
 	    }
             my ($hour, $minute) = split(":", $reply->{times}->{$i}->{time});
@@ -132,11 +152,15 @@ print "$par\n";
 	    push @dow, "6" if( $reply->{times}->{$i}->{sa} );
 	    push @dow, "7" if( $reply->{times}->{$i}->{su} );
 	    my $sdow = join(",",@dow);
+	    if( "/usr/share/oss/tools/oss-wsusoffline/wsus_update.pl" eq $cmd )
+	    {
+	       $cmd = $cmd." ".$reply->{times}->{$i}->{weekly}." ".$par;
+	    }
             my $event = new Config::Crontab::Event( -minute  => sprintf("%i",$minute),
                                                 -hour    => sprintf("%i",$hour),
                                                 -dow     => $sdow,
                                                 -user    => 'root',
-                                                -command => $reply->{times}->{$i}->{command} );
+                                                -command => $cmd );
 	    my $comment = new Config::Crontab::Comment(-data => "##".$reply->{times}->{$i}->{description} );
 	    my $block = new Config::Crontab::Block;
 	    $block->last($comment,$event);
@@ -173,6 +197,7 @@ sub addUpdate
 	push @ret, { fr => $reply->{fr} || 1 };
 	push @ret, { sa => $reply->{sa} || 0 };
 	push @ret, { su => $reply->{su} || 0 };
+	push @ret, { weekly => [ 1,2,3,4,5,6,7,8,9,10,11,12,'---DEFAULTS---',$reply->{weekly} || 4 ]};
 	push @ret, { action => 'cancel' };
 	push @ret, { name => 'action', value => 'createUpdate', attributes => [ label => 'insert' ] };
 	return \@ret;
@@ -182,6 +207,7 @@ sub createUpdate
 {
         my $this  = shift;
 	my $reply = shift;
+	my $week  = $reply->{weekly};
 	my $tmpf  = `mktemp /var/adm/oss/wsusXXXXXXXXXX`; chomp $tmpf;
 	my @dow   = ();
 	push @dow, "1" if( $reply->{mo} );
@@ -222,7 +248,7 @@ sub createUpdate
         $ct->read;
         my ($hour, $minute) = split(":", $reply->{time});
 	$tmpf =~ s#/var/adm/oss/wsus##;
-	my $command = "/usr/share/oss/tools/oss-wsusoffline/wsus_update.pl $tmpf";
+	my $command = "/usr/share/oss/tools/oss-wsusoffline/wsus_update.pl $week $tmpf";
         my $event = new Config::Crontab::Event( -minute  => sprintf("%i",$minute),
                                                 -hour    => sprintf("%i",$hour),
                                                 -dow     => $sdow,
@@ -290,9 +316,9 @@ sub createDownload
 	#Create command:
 	my $command = "/srv/itool/wsusoffline/sh/DownloadUpdates.sh $OS ".$reply->{language};
 	$command .= " /excludesp" if( $reply->{excludesp} );
-	$command .= " /dotnet" if( $reply->{dotnet} );
-	$command .= " /msse" if( $reply->{msse} );
-	$command .= " /wddefs" if( $reply->{wddefs} );
+	$command .= " /dotnet"    if( $reply->{dotnet} );
+	$command .= " /msse"      if( $reply->{msse} );
+	$command .= " /wddefs"    if( $reply->{wddefs} );
 	$command .= " /nocleanup" if( $reply->{nocleanup} );
         my $event = new Config::Crontab::Event( -minute  => sprintf("%i",$minute),
                                                 -hour    => sprintf("%i",$hour),

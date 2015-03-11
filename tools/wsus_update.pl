@@ -6,10 +6,14 @@ use strict;
 use oss_base;
 use oss_utils;
 
+my $week = shift;
 my $file = shift;
 my @PCs  = ();
 my @UPCs = ();
 my $oss  = oss_base->new;
+my $NW   = `date +%W`; chomp $NW;
+
+exit if( $NW % $week ); 
 
 open (INPUT,"</var/adm/oss/wsus$file"); 
 while(<INPUT>)
