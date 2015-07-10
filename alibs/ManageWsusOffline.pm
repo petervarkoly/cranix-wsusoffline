@@ -49,6 +49,7 @@ sub getCapabilities
                 { variable     => [ "delete",     [ type => "boolean" ] ] },
                 { variable     => [ "weekly",     [ type => "popup" ] ] },
                 { variable     => [ "nix",        [ type => "label" ] ] },
+                { variable     => [ "immediately",[ type => "boolean" ] ] },
                 { variable     => [ "mo",         [ type => "boolean" ] ] },
                 { variable     => [ "tu",         [ type => "boolean" ] ] },
                 { variable     => [ "we",         [ type => "boolean" ] ] },
@@ -176,6 +177,7 @@ sub addUpdate
 	my $reply = shift;
         my @ret   = ();
         my @pcs   = ();
+	my @table = ('days', { head => [ "mo","tu","we","th","fr","sa","su" ] } );
 	my @rooms = $this->get_rooms();
 	foreach my $pc ( keys %{$this->get_workstations} ){
 	   push @pcs, get_name_of_dn($pc);
@@ -190,8 +192,8 @@ sub addUpdate
 	push @ret, { rooms    => \@rooms };
 	push @ret, { hwconfig => $this->get_HW_configurations(0) };
 	push @ret, { immediately => 0 };
+	push @ret, { weekly => [ 1,2,3,4,5,6,7,8,9,10,11,12,'---DEFAULTS---',$reply->{weekly} || 4 ]};
 	push @ret, { time => $reply->{time} || '00:00' };
-	my @table = ('days', { head => [ "mo","tu","we","th","fr","sa","su" ] } );
 	push @table, { line => [ 1,
 				 { mo => $reply->{days}->{1}->{mo} || 0 },
 				 { tu => $reply->{days}->{1}->{tu} || 0 },
@@ -202,7 +204,6 @@ sub addUpdate
 				 { su => $reply->{days}->{1}->{su} || 0 }
 				 ]};
 	push @ret, { table    => \@table };
-	push @ret, { weekly => [ 1,2,3,4,5,6,7,8,9,10,11,12,'---DEFAULTS---',$reply->{weekly} || 4 ]};
 	push @ret, { action => 'cancel' };
 	push @ret, { name => 'action', value => 'createUpdate', attributes => [ label => 'insert' ] };
 	return \@ret;
@@ -283,6 +284,7 @@ sub addDownload
         my $this  = shift;
 	my $reply = shift;
         my @ret   = ();
+	my @table = ('days', { head => [ "mo","tu","we","th","fr","sa","su" ] } );
 	push @ret, { description => $reply->{description} || 'Download' };
 	push @ret, { immediately => 0 };
 	push @ret, { time => $reply->{time} || '00:00' };
