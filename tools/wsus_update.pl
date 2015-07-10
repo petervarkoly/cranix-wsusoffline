@@ -13,7 +13,9 @@ my @UPCs = ();
 my $oss  = oss_base->new;
 my $NW   = `date +%W`; chomp $NW;
 
-exit if( $NW % $week ); 
+exit if( $NW % $week );
+
+my $OSSDATE = `/usr/share/oss/tools/oss_date.sh`; chomp $OSSDATE;
 
 open (INPUT,"</var/adm/oss/wsus$file"); 
 while(<INPUT>)
@@ -46,5 +48,13 @@ foreach my $PC ( @PCs )
    push @UPCs, $oss->get_user_dn(get_name_of_dn($PC));
 }
 
-$oss->software_install_cmd(\@UPCs,['wsusUpdate'],1);
+#Create the package xml
+system("sed 's/#OSSDATE#/$OSSDATE/g' /usr/share/oss/templates/oss-wsusoffline/wsusUpdate.xml > /srv/itool/swrepository/wpkg/packages/wsusUpdate-$OSSDATE");
+#Create the package in ldap
+system("sed 's/#OSSDATE#/$OSSDATE/g' /usr/share/oss/templates/oss-wsusoffline/wsusUpdate.ldif > /var/adm/oss/wsus$file.ldif");
+system("sed -i 's/#LDAPBASE#/".$oss->{LDAP_BASE}."/g' /var/adm/oss/wsus$file.ldif");
+system("/usr/sbin/oss_ldapadd < /var/adm/oss/wsus$file.ldif");
+
+$oss->makeInstallDeinstallCmd('install',\@UPCs,["wsusUpdate-$OSSDATE"],1);
+$oss->makeInstallationNow(\@UPCs);
 
