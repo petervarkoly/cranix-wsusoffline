@@ -102,5 +102,6 @@ rm -rf %{buildroot}
 /usr/share/oss/tools/%{name}/
 /usr/share/lmd/lang/*
 /usr/share/lmd/alibs/ManageWsusOffline.pm
+%dir /srv/itool
 
 %changelog
