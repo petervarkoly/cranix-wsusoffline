@@ -9,12 +9,12 @@ DATE            = $(shell date "+%Y%m%d")
 
 
 install: 
-	mkdir -p $(DESTDIR)/srv/itool/swrepository/wpkg/packages/
 	mkdir -p $(DESTDIR)/usr/share/lmd/{alibs,lang}
 	mkdir -p $(DESTDIR)/usr/share/oss/tools/oss-wsusoffline/
-	install -m 644 wsusUpdate.xml $(DESTDIR)/srv/itool/swrepository/wpkg/packages/
+	mkdir -p $(DESTDIR)/usr/share/oss/templates/oss-wsusoffline/
 	install -m 644 alibs/ManageWsusOffline.pm $(DESTDIR)/usr/share/lmd/alibs
 	install -m 644 lang/*ini $(DESTDIR)/usr/share/lmd/lang
+	install -m 644 templates/* $(DESTDIR)/usr/share/oss/templates/oss-wsusoffline/
 	install -m 755 tools/* $(DESTDIR)/usr/share/oss/tools/oss-wsusoffline/
 
 dist:  

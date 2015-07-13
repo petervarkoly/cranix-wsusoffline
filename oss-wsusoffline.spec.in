@@ -34,6 +34,7 @@ Requires:       perl-Config-Crontab
 Requires:       wget 
 Requires:       xmlstarlet
 PreReq:		lmd
+Requires:	openschool-base >= %{version}
 BuildRequires:  unzip
 
 BuildArch:      noarch
@@ -81,10 +82,6 @@ rm -rf %{buildroot}
 %pre
 
 %post
-if [ -e /etc/sysconfig/schoolserver ]; then
-   /usr/share/oss/tools/%{name}/wsusUpdate.ldif.sh
-fi
-exit 0
 
 %files
 %defattr(-,root,root)
@@ -101,6 +98,7 @@ exit 0
 %{DEST_DIR}/sh/
 %{DEST_DIR}/static
 %{DEST_DIR}/temp/
+/usr/share/oss/templates/%{name}/
 /usr/share/oss/tools/%{name}/
 /usr/share/lmd/lang/*
 /usr/share/lmd/alibs/ManageWsusOffline.pm

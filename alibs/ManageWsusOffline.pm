@@ -49,6 +49,7 @@ sub getCapabilities
                 { variable     => [ "delete",     [ type => "boolean" ] ] },
                 { variable     => [ "weekly",     [ type => "popup" ] ] },
                 { variable     => [ "nix",        [ type => "label" ] ] },
+                { variable     => [ "immediately",[ type => "boolean" ] ] },
                 { variable     => [ "mo",         [ type => "boolean" ] ] },
                 { variable     => [ "tu",         [ type => "boolean" ] ] },
                 { variable     => [ "we",         [ type => "boolean" ] ] },
@@ -176,6 +177,7 @@ sub addUpdate
 	my $reply = shift;
         my @ret   = ();
         my @pcs   = ();
+	my @table = ('days', { head => [ "mo","tu","we","th","fr","sa","su" ] } );
 	my @rooms = $this->get_rooms();
 	foreach my $pc ( keys %{$this->get_workstations} ){
 	   push @pcs, get_name_of_dn($pc);
@@ -189,15 +191,19 @@ sub addUpdate
 	push @ret, { pcs      => \@pcs };
 	push @ret, { rooms    => \@rooms };
 	push @ret, { hwconfig => $this->get_HW_configurations(0) };
-	push @ret, { time => $reply->{time} || '00:00' };
-	push @ret, { mo => $reply->{mo} || 0 };
-	push @ret, { tu => $reply->{tu} || 0 };
-	push @ret, { we => $reply->{we} || 0 };
-	push @ret, { th => $reply->{th} || 0 };
-	push @ret, { fr => $reply->{fr} || 1 };
-	push @ret, { sa => $reply->{sa} || 0 };
-	push @ret, { su => $reply->{su} || 0 };
+	push @ret, { immediately => 0 };
 	push @ret, { weekly => [ 1,2,3,4,5,6,7,8,9,10,11,12,'---DEFAULTS---',$reply->{weekly} || 4 ]};
+	push @ret, { time => $reply->{time} || '00:00' };
+	push @table, { line => [ 1,
+				 { mo => $reply->{days}->{1}->{mo} || 0 },
+				 { tu => $reply->{days}->{1}->{tu} || 0 },
+				 { we => $reply->{days}->{1}->{we} || 0 },
+				 { th => $reply->{days}->{1}->{th} || 0 },
+				 { fr => $reply->{days}->{1}->{fr} || 1 },
+				 { sa => $reply->{days}->{1}->{sa} || 0 },
+				 { su => $reply->{days}->{1}->{su} || 0 }
+				 ]};
+	push @ret, { table    => \@table };
 	push @ret, { action => 'cancel' };
 	push @ret, { name => 'action', value => 'createUpdate', attributes => [ label => 'insert' ] };
 	return \@ret;
@@ -210,13 +216,13 @@ sub createUpdate
 	my $week  = $reply->{weekly};
 	my $tmpf  = `mktemp /var/adm/oss/wsusXXXXXXXXXX`; chomp $tmpf;
 	my @dow   = ();
-	push @dow, "1" if( $reply->{mo} );
-	push @dow, "2" if( $reply->{tu} );
-	push @dow, "3" if( $reply->{we} );
-	push @dow, "4" if( $reply->{th} );
-	push @dow, "5" if( $reply->{fr} );
-	push @dow, "6" if( $reply->{sa} );
-	push @dow, "7" if( $reply->{su} );
+	push @dow, "1" if( $reply->{days}->{1}->{mo} );
+	push @dow, "2" if( $reply->{days}->{1}->{tu} );
+	push @dow, "3" if( $reply->{days}->{1}->{we} );
+	push @dow, "4" if( $reply->{days}->{1}->{th} );
+	push @dow, "5" if( $reply->{days}->{1}->{fr} );
+	push @dow, "6" if( $reply->{days}->{1}->{sa} );
+	push @dow, "7" if( $reply->{days}->{1}->{su} );
         my $sdow = join(",",@dow);
 	open CONFIG, ">$tmpf";
 	if( $reply->{pcs} ) {
@@ -243,25 +249,32 @@ sub createUpdate
 	    $this->addUpdate($reply);
 	}
 	close CONFIG;
-        my $ct    = new Config::Crontab( -file => $ctFile );
-        $ct->system(1);
-        $ct->read;
-        my ($hour, $minute) = split(":", $reply->{time});
 	$tmpf =~ s#/var/adm/oss/wsus##;
-	my $command = "/usr/share/oss/tools/oss-wsusoffline/wsus_update.pl $week $tmpf";
-        my $event = new Config::Crontab::Event( -minute  => sprintf("%i",$minute),
-                                                -hour    => sprintf("%i",$hour),
-                                                -dow     => $sdow,
-                                                -user    => 'root',
-                                                -command => $command );
-	if( $reply->{description} eq 'Update' ) {
-	   $reply->{description} .= ' '.$tmpf;
+	if( $reply->{immediately} )
+	{
+		create_job("/usr/share/oss/tools/oss-wsusoffline/wsus_update.pl 0 $tmpf","Start WSUS Update");
 	}
-	my $comment = new Config::Crontab::Comment(-data => "##".$reply->{description} );
-        my $block = new Config::Crontab::Block;
-        $block->last($comment,$event);
-        $ct->last($block);
-        $ct->write;
+	else
+	{
+		my $ct    = new Config::Crontab( -file => $ctFile );
+		$ct->system(1);
+		$ct->read;
+		my ($hour, $minute) = split(":", $reply->{time});
+		my $command = "/usr/share/oss/tools/oss-wsusoffline/wsus_update.pl $week $tmpf";
+		my $event = new Config::Crontab::Event( -minute  => sprintf("%i",$minute),
+		                                        -hour    => sprintf("%i",$hour),
+		                                        -dow     => $sdow,
+		                                        -user    => 'root',
+		                                        -command => $command );
+		if( $reply->{description} eq 'Update' ) {
+		   $reply->{description} .= ' '.$tmpf;
+		}
+		my $comment = new Config::Crontab::Comment(-data => "##".$reply->{description} );
+		my $block = new Config::Crontab::Block;
+		$block->last($comment,$event);
+		$ct->last($block);
+		$ct->write;
+	}
         $this->default;
 
 }
@@ -271,15 +284,20 @@ sub addDownload
         my $this  = shift;
 	my $reply = shift;
         my @ret   = ();
+	my @table = ('days', { head => [ "mo","tu","we","th","fr","sa","su" ] } );
 	push @ret, { description => $reply->{description} || 'Download' };
+	push @ret, { immediately => 0 };
 	push @ret, { time => $reply->{time} || '00:00' };
-	push @ret, { mo => $reply->{mo} || 0 };
-	push @ret, { tu => $reply->{tu} || 0 };
-	push @ret, { we => $reply->{we} || 0 };
-	push @ret, { th => $reply->{th} || 0 };
-	push @ret, { fr => $reply->{fr} || 1 };
-	push @ret, { sa => $reply->{sa} || 0 };
-	push @ret, { su => $reply->{su} || 0 };
+	push @table, { line => [ 1,
+				 { mo => $reply->{days}->{1}->{mo} || 0 },
+				 { tu => $reply->{days}->{1}->{tu} || 0 },
+				 { we => $reply->{days}->{1}->{we} || 0 },
+				 { th => $reply->{days}->{1}->{th} || 0 },
+				 { fr => $reply->{days}->{1}->{fr} || 1 },
+				 { sa => $reply->{days}->{1}->{sa} || 0 },
+				 { su => $reply->{days}->{1}->{su} || 0 }
+				 ]};
+	push @ret, { table    => \@table };
 	push @ret, { OS => getOS($reply->{OS})};
 	push @ret, { language => getLang($reply->{language})};
 	push @ret, { excludesp => $reply->{excludesp} || 1 };
@@ -298,13 +316,13 @@ sub createDownload
         my $this  = shift;
 	my $reply = shift;
 	my @dow   = ();
-	push @dow, "1" if( $reply->{mo} );
-	push @dow, "2" if( $reply->{tu} );
-	push @dow, "3" if( $reply->{we} );
-	push @dow, "4" if( $reply->{th} );
-	push @dow, "5" if( $reply->{fr} );
-	push @dow, "6" if( $reply->{sa} );
-	push @dow, "7" if( $reply->{su} );
+	push @dow, "1" if( $reply->{days}->{1}->{mo} );
+	push @dow, "2" if( $reply->{days}->{1}->{tu} );
+	push @dow, "3" if( $reply->{days}->{1}->{we} );
+	push @dow, "4" if( $reply->{days}->{1}->{th} );
+	push @dow, "5" if( $reply->{days}->{1}->{fr} );
+	push @dow, "6" if( $reply->{days}->{1}->{sa} );
+	push @dow, "7" if( $reply->{days}->{1}->{su} );
 
         my $ct    = new Config::Crontab( -file => $ctFile );
         $ct->system(1);
@@ -320,19 +338,26 @@ sub createDownload
 	$command .= " /msse"      if( $reply->{msse} );
 	$command .= " /wddefs"    if( $reply->{wddefs} );
 	$command .= " /nocleanup" if( $reply->{nocleanup} );
-        my $event = new Config::Crontab::Event( -minute  => sprintf("%i",$minute),
-                                                -hour    => sprintf("%i",$hour),
-                                                -dow     => $sdow,
-                                                -user    => 'root',
-                                                -command => $command );
-	if( $reply->{description} eq 'Download' ) {
-	   $reply->{description} .= ' '.$OS.' '.$reply->{language};
+	if( $reply->{immediately} )
+	{
+		create_job("$command","Start WSUS Downloads");
 	}
-	my $comment = new Config::Crontab::Comment(-data => "##".$reply->{description} );
-        my $block = new Config::Crontab::Block;
-        $block->last($comment,$event);
-        $ct->last($block);
-        $ct->write;
+	else
+	{
+		my $event = new Config::Crontab::Event( -minute  => sprintf("%i",$minute),
+		                                        -hour    => sprintf("%i",$hour),
+		                                        -dow     => $sdow,
+		                                        -user    => 'root',
+		                                        -command => $command );
+		if( $reply->{description} eq 'Download' ) {
+		   $reply->{description} .= ' '.$OS.' '.$reply->{language};
+		}
+		my $comment = new Config::Crontab::Comment(-data => "##".$reply->{description} );
+		my $block = new Config::Crontab::Block;
+		$block->last($comment,$event);
+		$ct->last($block);
+		$ct->write;
+	}
         $this->default;
 
 }
