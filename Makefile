@@ -4,7 +4,7 @@ NRELEASE        = $(shell echo $(RELEASE) + 1 | bc )
 HERE            = $(shell pwd)
 PACKAGE         = oss-wsusoffline
 DESTDIR         = /
-SUBDIRS         = alibs tools lang wsusUpdate.xml Makefile
+SUBDIRS         = Makefile alibs lang templates tools
 DATE            = $(shell date "+%Y%m%d")
 
 
