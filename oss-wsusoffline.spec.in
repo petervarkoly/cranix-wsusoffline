@@ -102,10 +102,5 @@ rm -rf %{buildroot}
 /usr/share/oss/tools/%{name}/
 /usr/share/lmd/lang/*
 /usr/share/lmd/alibs/ManageWsusOffline.pm
-/srv/itool/swrepository/wpkg/packages/wsusUpdate.xml
-%dir /srv/itool
-%dir /srv/itool/swrepository
-%dir /srv/itool/swrepository/wpkg
-%dir /srv/itool/swrepository/wpkg/packages
 
 %changelog
