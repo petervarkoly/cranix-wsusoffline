@@ -179,8 +179,8 @@ sub addUpdate
         my @pcs   = ();
 	my @table = ('days', { head => [ "mo","tu","we","th","fr","sa","su" ] } );
 	my @rooms = $this->get_rooms();
-	foreach my $pc ( keys %{$this->get_workstations} ){
-	   push @pcs, get_name_of_dn($pc);
+	foreach my $pc ( sort keys %{$this->get_workstations} ){
+	   push @pcs, [$pc, get_name_of_dn($pc)];
 	}
 	@pcs = sort(@pcs);
 	push @ret, { description => $reply->{description} || 'Update' };

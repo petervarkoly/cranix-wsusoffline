@@ -10,6 +10,7 @@ my $week = shift;
 my $file = shift;
 my @PCs  = ();
 my @UPCs = ();
+my @UIDs = ();
 my $oss  = oss_base->new;
 my $NW   = `date +%W`; chomp $NW;
 
@@ -49,7 +50,9 @@ while(<INPUT>)
 
 foreach my $PC ( @PCs )
 {
-   push @UPCs, $oss->get_user_dn($PC);
+   my $cn = get_name_of_dn($PC);
+   push @UIDs, $cn;
+   push @UPCs, $oss->get_user_dn($cn);
 }
 
 #Create the package xml
@@ -60,5 +63,5 @@ system("sed -i 's/#LDAPBASE#/".$oss->{LDAP_BASE}."/g' /var/adm/oss/wsus$file.ldi
 system("/usr/sbin/oss_ldapadd < /var/adm/oss/wsus$file.ldif");
 
 $oss->makeInstallDeinstallCmd('install',\@UPCs,["configurationKey=wsusUpdate-$OSSDATE,o=osssoftware,".$oss->{SYSCONFIG}->{COMPUTERS_BASE}]);
-makeInstallationNow(\@PCs);
+makeInstallationNow(\@UIDs);
 
