@@ -27,9 +27,9 @@ dist:
 	if [ -d /data1/OSC/home\:openschoolserver/$(PACKAGE) ] ; then \
 	        cd /data1/OSC/home\:openschoolserver/$(PACKAGE); osc up; cd $(HERE);\
 	        cp $(PACKAGE).tar.bz2  $(PACKAGE).spec /data1/OSC/home\:openschoolserver/$(PACKAGE); \
-	        cp wsusoffline90.zip  $(PACKAGE).spec /data1/OSC/home\:openschoolserver/$(PACKAGE); \
+	        cp wsusoffline97.zip  $(PACKAGE).spec /data1/OSC/home\:openschoolserver/$(PACKAGE); \
 	        cd /data1/OSC/home\:openschoolserver/$(PACKAGE); \
-	        osc vc; \
+	        osc vc; osc addremove; \
 	        osc ci -m "New Build Version"; \
 	fi 
 	echo $(NRELEASE) > RELEASE
