@@ -82,6 +82,7 @@ rm -rf %{buildroot}
 %pre
 
 %post
+/etc/init.d/lmd   restart
 
 %files
 %defattr(-,root,root)
