@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <packages>
     <package id="wsusUpdate-#OSSDATE#" name="wsusUpdate-#OSSDATE#" revision="%PKG_VERSION%" reboot="false" priority="1" execute="always">
-	<variable name="PKG_VERSION"          value="0" />
-	<variable name="PKG_NAME"             value="wsusUpdate-#OSSDATE#" />
-	<variable name="BASE_PATH"            value="\\install\itool\swrepository" />
+        <variable name="PKG_VERSION"          value="0" />
+        <variable name="PKG_NAME"             value="wsusUpdate-#OSSDATE#" />
+        <variable name="BASE_PATH"            value="\\install\itool\swrepository" />
+        <variable name="LOG_PATH"             value="%BASE_PATH%\logs\%COMPUTERNAME%" />
 
-	<!-- Disable Windows Auto Update in Registry ( AUOptions, ScheduledInstallDay, ScheduledInstallTime, IncludeRecommendedUpdates, ElevateNonAdmins, NextDetectionTime )-->
-	<install cmd='reg DELETE "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update" /va /f'/>
+        <!-- Disable Windows Auto Update in Registry ( AUOptions, ScheduledInstallDay, ScheduledInstallTime, IncludeRecommendedUpdates, ElevateNonAdmins, NextDetectionTime )-->
+        <install cmd='reg DELETE "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update" /va /f'/>
 
-	<!-- start wsusUpdate  -->
-	<install cmd='%COMSPEC% /K pushd "\\install\itool\wsusoffline\client\cmd" &amp;&amp; DoUpdate.cmd /showlog /all &amp;&amp; popd'/> 
+        <!-- start wsusUpdate  -->
+<!--    <install cmd='%COMSPEC% /K pushd "\\install\itool\wsusoffline\client\cmd" &amp;&amp; DoUpdate.cmd /showlog /all &amp;&amp; popd'/> -->
+        <install cmd='%COMSPEC% /K pushd "\\install\itool\wsusoffline\client\cmd" &amp;&amp; DoUpdate.cmd /showlog /all &gt;&gt;"%LOG_PATH%\%PKG_NAME%_inst.log" &amp;&amp; popd'/>
     </package>
 </packages>
