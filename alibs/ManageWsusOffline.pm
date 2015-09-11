@@ -182,7 +182,6 @@ sub addUpdate
 	foreach my $pc ( sort keys %{$this->get_workstations} ){
 	   push @pcs, [$pc, get_name_of_dn($pc)];
 	}
-	@pcs = sort(@pcs);
 	push @ret, { description => $reply->{description} || 'Update' };
 	if( defined $reply->{warning} )
 	{
