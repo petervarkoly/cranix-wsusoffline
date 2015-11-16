@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <packages>
-    <package id="wsusUpdate-#OSSDATE#" name="wsusUpdate-#OSSDATE#" revision="%PKG_VERSION%" reboot="false" priority="1" execute="always">
+    <package id="wsusUpdate-#OSSDATE#" name="wsusUpdate-#OSSDATE#" revision="%PKG_VERSION%" reboot="false" priority="1" execute="once">
         <variable name="PKG_VERSION"          value="0" />
         <variable name="PKG_NAME"             value="wsusUpdate-#OSSDATE#" />
         <variable name="BASE_PATH"            value="\\install\itool\swrepository" />
