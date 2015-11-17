@@ -14,6 +14,9 @@ type=rpm-md
 keeppackages=0
 " > /tmp/oss-wsusoffline.repo
 
+wget -O repomd.xml.key https://$REPO_USER:$REPO_PASSWORD@repo.openschoolserver.net/addons/oss-wsusoffline/repodata/repomd.xml.key
+gpg --import repomd.xml.key
 zypper ar /tmp/oss-wsusoffline.repo
+zypper --gpg-auto-import-keys ref
 zypper -n install oss-wsusoffline
 
