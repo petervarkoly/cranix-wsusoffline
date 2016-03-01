@@ -11,6 +11,6 @@
 
         <!-- start wsusUpdate  -->
 <!--    <install cmd='%COMSPEC% /K pushd "\\install\itool\wsusoffline\client\cmd" &amp;&amp; DoUpdate.cmd /showlog /all &amp;&amp; popd'/> -->
-        <install timeout="36000" cmd='%COMSPEC% /K pushd "\\install\itool\wsusoffline\client\cmd" &amp;&amp; DoUpdate.cmd /showlog /all &gt;&gt;"%LOG_PATH%\%PKG_NAME%_inst.log" &amp;&amp; popd'/>
+	 <install timeout="36000"  cmd='%comspec% /c \\install\itool\wsusoffline\client\cmd\StartUpdater.cmd > %LOG_PATH%\%PKG_NAME%_inst.log'/>
     </package>
 </packages>
