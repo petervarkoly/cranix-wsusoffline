@@ -26,6 +26,7 @@ URL:            http://www.wsusoffline.net/
 Source:		%{name}.tar.bz2
 Source1: 	wsusoffline97.zip
 Source2:	UpdateInstaller.ini
+Source3:	StartUpdater.cmd
 #Source99:       #{name}-rpmlintrc
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Requires:	cabextract
@@ -77,6 +78,7 @@ chmod a+x  $RPM_BUILD_ROOT/%{DEST_DIR}/sh/*
 find $RPM_BUILD_ROOT/%{DEST_DIR}/static/ -type d -exec chmod g+ws {} \;
 chmod g+ws $RPM_BUILD_ROOT/%{DEST_DIR}/temp/
 install -m 644 %{S:2} $RPM_BUILD_ROOT/%{DEST_DIR}/client/
+install -m 644 %{S:3} $RPM_BUILD_ROOT/%{DEST_DIR}/client//cmd/
 
 %clean
 rm -rf %{buildroot}
