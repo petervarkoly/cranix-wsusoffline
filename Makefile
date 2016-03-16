@@ -26,7 +26,7 @@ dist:
 	tar hjcvpf $(PACKAGE).tar.bz2 $(PACKAGE)
 	if [ -d /data1/OSC/home\:openschoolserver/$(PACKAGE) ] ; then \
 	        cd /data1/OSC/home\:openschoolserver/$(PACKAGE); osc up; cd $(HERE);\
-	        cp $(PACKAGE).tar.bz2 wsusoffline97.zip UpdateInstaller.ini StartUpdater.cmd $(PACKAGE).spec /data1/OSC/home\:openschoolserver/$(PACKAGE); \
+	        cp $(PACKAGE).tar.bz2 wsusoffline106.zip UpdateInstaller.ini StartUpdater.cmd $(PACKAGE).spec /data1/OSC/home\:openschoolserver/$(PACKAGE); \
 	        cd /data1/OSC/home\:openschoolserver/$(PACKAGE); \
 	        osc vc; osc addremove; \
 	        osc ci -m "New Build Version"; \
