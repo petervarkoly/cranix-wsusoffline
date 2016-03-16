@@ -364,14 +364,13 @@ sub createDownload
 sub getOS
 {
 	my $def = shift || 0;
-	my @OS = ( [ "wxp", "Windos XP" ], [ "wxp-x64", "Windos XP 64 bit" ],
-		   [ "w2k3", "Windows Server 2003" ],[ "w2k3-x64", "Windows Server 2003 64 bit" ],
-		   [ "w60", "Windows Vista / Server 2008" ],[ "w60-x64", "Windows Vista 64 bit/ Server 2008" ],
+	my @OS = ( [ "w60", "Windows Vista / Server 2008" ],[ "w60-x64", "Windows Vista 64 bit/ Server 2008" ],
 		   [ "w61", "Windows 7" ],[ "w61-x64", "Windows 7 64 bit/ Server 2008 R2 64" ],
 		   [ "w62", "Windows 8" ],[ "w62-x64", "Windows 8 64 bit/ Server 2012" ],
 		   [ "w63", "Windows 8.1" ],[ "w63-x64", "Windows 8.1 64 bit" ],
+		   [ "w100", "Windows 10" ],[ "w100-x64", "Windows 10 64 bit/ Server 2016" ],
 		   [ "all-x86", "All 32 bit" ],[ "all-x64", "All 64 bit" ],
-		   [ "o2k3", "Office 2003" ],[ "o2k7", "Office 2007" ],[ "o2k10", "Office 2010" ],[ "o2k13", "Office 2013" ],[ "ofc", "All Office updates" ] );
+		   [ "o2k7", "Office 2007" ],[ "o2k10", "Office 2010" ], [ "o2k13", "Office 2013" ], [ "o2k16", "Office 2016" ], [ "ofc", "All Office updates" ] );
 	push @OS, ('---DEFAULTS---',$def) if( $def);
 	return \@OS;
 }
