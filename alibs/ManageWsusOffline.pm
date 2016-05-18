@@ -157,6 +157,10 @@ sub apply
 	    {
 	       $cmd = $cmd." ".$reply->{times}->{$i}->{weekly}." ".$par;
 	    }
+            else
+            {
+               $cmd = $reply->{times}->{$i}->{command};
+            }
             my $event = new Config::Crontab::Event( -minute  => sprintf("%i",$minute),
                                                 -hour    => sprintf("%i",$hour),
                                                 -dow     => $sdow,
