@@ -19,4 +19,5 @@ gpg --import repomd.xml.key
 zypper ar /tmp/oss-wsusoffline.repo
 zypper --gpg-auto-import-keys ref
 zypper -n install oss-wsusoffline
+zypper mr -r oss-wsusoffline
 
