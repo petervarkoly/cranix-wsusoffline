@@ -15,5 +15,5 @@ mv binaries/*.noarch.rpm $REPO/noarch/
 mv binaries/*.x86_64.rpm $REPO/x86_64/
 mv binaries/*.i586.rpm   $REPO/i586/
 createrepo $REPO
-cp /data1/OSC/home:openschoolserver/oss-key.gpg $(REPO)/repodata/repomd.xml.key
+cp /data1/OSC/home:openschoolserver/oss-key.gpg $REPO/repodata/repomd.xml.key
 gpg -a --detach-sign $REPO/repodata/repomd.xml 
