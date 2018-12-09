@@ -24,14 +24,14 @@ Summary:        WSUS Offline Update: download Microsoft updates
 License:        GPLv2+
 URL:            http://www.wsusoffline.net/
 Source:		%{name}.tar.bz2
-Source1: 	wsusoffline1081.zip
+Source1: 	wsusoffline115.zip
 Source2:	UpdateInstaller.ini
-Source3:	StartUpdater.cmd
 #Source99:       #{name}-rpmlintrc
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Requires:	cabextract
 Requires:	libmspack
-Requires:       md5deep
+Requires:       hashdeep
+#Requires:       md5deep
 Requires:       perl-Config-Crontab
 Requires:       wget 
 Requires:       xmlstarlet
@@ -78,8 +78,7 @@ chmod a+x  $RPM_BUILD_ROOT/%{DEST_DIR}/sh/*
 find $RPM_BUILD_ROOT/%{DEST_DIR}/static/ -type d -exec chmod g+ws {} \;
 chmod g+ws $RPM_BUILD_ROOT/%{DEST_DIR}/temp/
 install -m 644 %{S:2} $RPM_BUILD_ROOT/%{DEST_DIR}/client/
-install -m 644 %{S:3} $RPM_BUILD_ROOT/%{DEST_DIR}/client/cmd/
-
+echo 'set UPDATE_LOGFILE=W:\log\%%COMPUTERNAME%%.log' > /srv/itool/wsusoffline/client/cmd/custom/InitializationHook.cmd
 %clean
 rm -rf %{buildroot}
 
@@ -89,24 +88,22 @@ rm -rf %{buildroot}
 /etc/init.d/lmd   restart
 
 %files
-%defattr(-,root,root)
+%defattr(-,ossreader,user)
 %dir %{DEST_DIR}
 %{DEST_DIR}/doc/
 %{DEST_DIR}/xslt/
- 
-%defattr(-,root,WORKSTATIONS)
 %{DEST_DIR}/client/
 %{DEST_DIR}/exclude/
 %{DEST_DIR}/iso/
 %{DEST_DIR}/log/
-# write access required, but only for checkconnection
 %{DEST_DIR}/sh/
 %{DEST_DIR}/static
 %{DEST_DIR}/temp/
-/usr/share/oss/templates/%{name}/
-/usr/share/oss/tools/%{name}/
-/usr/share/lmd/lang/*
-/usr/share/lmd/alibs/ManageWsusOffline.pm
-%dir /srv/itool
 
+%defattr(-,root,root)
+/usr/share/oss/templates/wsusoffline/
+/usr/share/oss/tools/wsusoffline/
+/srv/salt/_modules/oss_update.py
+%defattr(0755,root,root)
+/usr/share/oss/plugins/clients/start/120_start_wsus.sh
 %changelog

@@ -9,13 +9,15 @@ DATE            = $(shell date "+%Y%m%d")
 
 
 install: 
-	mkdir -p $(DESTDIR)/usr/share/lmd/{alibs,lang}
-	mkdir -p $(DESTDIR)/usr/share/oss/tools/oss-wsusoffline/
-	mkdir -p $(DESTDIR)/usr/share/oss/templates/oss-wsusoffline/
-	install -m 644 alibs/ManageWsusOffline.pm $(DESTDIR)/usr/share/lmd/alibs
-	install -m 644 lang/*ini $(DESTDIR)/usr/share/lmd/lang
-	install -m 644 templates/* $(DESTDIR)/usr/share/oss/templates/oss-wsusoffline/
-	install -m 755 tools/* $(DESTDIR)/usr/share/oss/tools/oss-wsusoffline/
+	mkdir -p $(DESTDIR)/usr/share/oss/tools/wsusoffline/
+	mkdir -p $(DESTDIR)/usr/share/oss/templates/wsusoffline/
+	mkdir -p $(DESTDIR)/usr/share/oss/plugins/clients/start/
+	mkdir -p $(DESTDIR)/srv/salt/_modules/
+	install -m 644 templates/* $(DESTDIR)/usr/share/oss/templates/wsusoffline/
+	install -m 755 tools/* $(DESTDIR)/usr/share/oss/tools/wsusoffline/
+	install -m 755 plugins/120_start_wsus.sh $(DESTDIR)/usr/share/oss/plugins/clients/start/
+	install -m 644 salt/oss_update.py $(DESTDIR)/srv/salt/_modules/
+
 
 dist:  
 	rm -rf $(PACKAGE)
@@ -27,7 +29,7 @@ dist:
 	if [ -d /data1/OSC/home\:openschoolserver/$(PACKAGE) ] ; then \
 	        cd /data1/OSC/home\:openschoolserver/$(PACKAGE); osc up; cd $(HERE);\
 		rm /data1/OSC/home\:openschoolserver/$(PACKAGE)/wsusoffline*.zip;\
-	        cp $(PACKAGE).tar.bz2 wsusoffline*.zip UpdateInstaller.ini StartUpdater.cmd $(PACKAGE).spec /data1/OSC/home\:openschoolserver/$(PACKAGE); \
+	        cp $(PACKAGE).tar.bz2 wsusoffline*.zip UpdateInstaller.ini $(PACKAGE).spec /data1/OSC/home\:openschoolserver/$(PACKAGE); \
 	        cd /data1/OSC/home\:openschoolserver/$(PACKAGE); \
 	        osc vc; osc addremove; \
 	        osc ci -m "New Build Version"; \
