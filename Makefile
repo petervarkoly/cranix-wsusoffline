@@ -26,14 +26,13 @@ dist:
 	sed    s/VERSION/$(VERSION)/  $(PACKAGE).spec.in > $(PACKAGE).spec
 	sed -i s/RELEASE/$(NRELEASE)/ $(PACKAGE).spec
 	tar hjcvpf $(PACKAGE).tar.bz2 $(PACKAGE)
-	if [ -d /data1/OSC/home\:openschoolserver/$(PACKAGE) ] ; then \
-	        cd /data1/OSC/home\:openschoolserver/$(PACKAGE); osc up; cd $(HERE);\
-		rm /data1/OSC/home\:openschoolserver/$(PACKAGE)/wsusoffline*.zip;\
-	        cp $(PACKAGE).tar.bz2 wsusoffline*.zip UpdateInstaller.ini $(PACKAGE).spec /data1/OSC/home\:openschoolserver/$(PACKAGE); \
-	        cd /data1/OSC/home\:openschoolserver/$(PACKAGE); \
-	        osc vc; osc addremove; \
-	        osc ci -m "New Build Version"; \
-	fi 
+	if [ -d /data1/OSC/home\:varkoly\:OSS-4-0/$(PACKAGE) ] ; then \
+	    cd /data1/OSC/home\:varkoly\:OSS-4-0/$(PACKAGE); osc up; cd $(HERE);\
+	    mv $(PACKAGE).tar.bz2 $(PACKAGE).spec /data1/OSC/home\:varkoly\:OSS-4-0/$(PACKAGE); \
+	    cd /data1/OSC/home\:varkoly\:OSS-4-0/$(PACKAGE); \
+	    osc vc; \
+	    osc ci -m "New Build Version"; \
+	fi
 	echo $(NRELEASE) > RELEASE
 	git commit -a -m "New release"
 	git push
