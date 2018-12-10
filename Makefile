@@ -28,6 +28,7 @@ dist:
 	tar hjcvpf $(PACKAGE).tar.bz2 $(PACKAGE)
 	if [ -d /data1/OSC/home\:varkoly\:OSS-4-0/$(PACKAGE) ] ; then \
 	    cd /data1/OSC/home\:varkoly\:OSS-4-0/$(PACKAGE); osc up; cd $(HERE);\
+	    cp  wsusoffline*.zip UpdateInstaller.ini /data1/OSC/home\:varkoly\:OSS-4-0/$(PACKAGE); \
 	    mv $(PACKAGE).tar.bz2 $(PACKAGE).spec /data1/OSC/home\:varkoly\:OSS-4-0/$(PACKAGE); \
 	    cd /data1/OSC/home\:varkoly\:OSS-4-0/$(PACKAGE); \
 	    osc vc; \
