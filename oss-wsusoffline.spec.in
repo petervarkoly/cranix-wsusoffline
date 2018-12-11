@@ -89,6 +89,7 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,ossreader,user)
+%dir /srv/itool
 %dir %{DEST_DIR}
 %{DEST_DIR}/doc/
 %{DEST_DIR}/xslt/
