@@ -78,7 +78,7 @@ chmod a+x  $RPM_BUILD_ROOT/%{DEST_DIR}/sh/*
 find $RPM_BUILD_ROOT/%{DEST_DIR}/static/ -type d -exec chmod g+ws {} \;
 chmod g+ws $RPM_BUILD_ROOT/%{DEST_DIR}/temp/
 install -m 644 %{S:2} $RPM_BUILD_ROOT/%{DEST_DIR}/client/
-echo 'set UPDATE_LOGFILE=W:\log\%%COMPUTERNAME%%.log' > /srv/itool/wsusoffline/client/cmd/custom/InitializationHook.cmd
+echo 'set UPDATE_LOGFILE=W:\log\%%COMPUTERNAME%%.log' > $RPM_BUILD_ROOT/%{DEST_DIR}/client/cmd/custom/InitializationHook.cmd
 %clean
 rm -rf %{buildroot}
 
