@@ -32,11 +32,9 @@ Requires:	cabextract
 Requires:	libmspack
 Requires:       hashdeep
 #Requires:       md5deep
-Requires:       perl-Config-Crontab
 Requires:       wget 
 Requires:       xmlstarlet
-PreReq:		lmd
-Requires:	openschool-base >= %{version}
+Requires:	oss-base >= %{version}
 BuildRequires:  unzip
 
 BuildArch:      noarch
@@ -85,7 +83,6 @@ rm -rf %{buildroot}
 %pre
 
 %post
-/etc/init.d/lmd   restart
 
 %files
 %defattr(-,ossreader,user)
