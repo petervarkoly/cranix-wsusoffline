@@ -34,9 +34,10 @@ Requires:       hashdeep
 #Requires:       md5deep
 Requires:       wget 
 Requires:       xmlstarlet
-Requires:	oss-base >= %{version}
+Requires(Pre):	oss-base >= %{version}
 BuildRequires:  unzip
-
+Requires(Pre):  pwdutils
+%define         reader_user ossreader
 BuildArch:      noarch
 
 %description
@@ -81,11 +82,19 @@ echo 'set UPDATE_LOGFILE=W:\log\%%COMPUTERNAME%%.log' > $RPM_BUILD_ROOT/%{DEST_D
 rm -rf %{buildroot}
 
 %pre
+# create reader_user user, if not existing
+if
+    getent passwd %{reader_user} >/dev/null
+then
+    : OK user %{reader_user} already present
+else
+    useradd  -r -o -g users -s /bin/bash -c "OSS Reader" %{reader_user} 2> /dev/null || :
+fi
 
 %post
 
 %files
-%defattr(-,ossreader,user)
+%defattr(-,%{reader_user},users)
 %dir /srv/itool
 %dir %{DEST_DIR}
 %{DEST_DIR}/doc/
