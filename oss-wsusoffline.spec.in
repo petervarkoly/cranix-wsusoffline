@@ -34,9 +34,9 @@ Requires:       hashdeep
 #Requires:       md5deep
 Requires:       wget 
 Requires:       xmlstarlet
-Requires(Pre):	oss-base >= %{version}
+PreReq:		oss-base >= %{version}
 BuildRequires:  unzip
-Requires(Pre):  pwdutils
+PreReq:		pwdutils
 %define         reader_user ossreader
 BuildArch:      noarch
 
