@@ -4,7 +4,7 @@ NRELEASE        = $(shell echo $(RELEASE) + 1 | bc )
 HERE            = $(shell pwd)
 PACKAGE         = oss-wsusoffline
 DESTDIR         = /
-SUBDIRS         = Makefile templates tools salt plugins
+SUBDIRS         = Makefile salt plugins
 DATE            = $(shell date "+%Y%m%d")
 REPO		= "/data1/OSC/home:varkoly:OSS-4-1:leap15.1"
 
