@@ -24,7 +24,7 @@ Summary:        WSUS Offline Update: download Microsoft updates
 License:        GPLv2+
 URL:            http://www.wsusoffline.net/
 Source:		%{name}.tar.bz2
-Source1: 	wsusoffline115.zip
+Source1: 	wsusoffline1183.zip
 Source2:	UpdateInstaller.ini
 #Source99:       #{name}-rpmlintrc
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -108,8 +108,6 @@ fi
 %{DEST_DIR}/temp/
 
 %defattr(-,root,root)
-/usr/share/oss/templates/wsusoffline/
-/usr/share/oss/tools/wsusoffline/
 /srv/salt/_modules/oss_update.py
 %defattr(0755,root,root)
 /usr/share/oss/plugins/clients/start/120_start_wsus.sh
