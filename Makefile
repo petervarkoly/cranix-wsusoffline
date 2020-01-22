@@ -18,6 +18,7 @@ dist:
 	mkdir -p $(PACKAGE)
 	for i in $(SUBDIRS); do /bin/ln -s ../$$i $(PACKAGE)/$$i; done
 	tar hjcvpf $(PACKAGE).tar.bz2 $(PACKAGE)
+	xterm -e git log --raw &
 	if [ -d $(REPO)/$(PACKAGE) ] ; then \
 	    cd $(REPO)/$(PACKAGE); osc up; cd $(HERE);\
 	    cp  wsusoffline*.zip UpdateInstaller.ini $(REPO)/$(PACKAGE); \
