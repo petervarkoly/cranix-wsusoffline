@@ -1,9 +1,9 @@
 HERE            = $(shell pwd)
-PACKAGE         = oss-wsusoffline
+PACKAGE         = cranix-wsusoffline
 DESTDIR         = /
 SUBDIRS         = Makefile salt plugins
 DATE            = $(shell date "+%Y%m%d")
-REPO		= /data1/OSC/home:varkoly:OSS-4-1:leap15.1
+REPO		= /data1/OSC/home:pvarkoly:CRANIX
 
 
 install: 
